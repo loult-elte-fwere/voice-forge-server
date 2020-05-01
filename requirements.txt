@@ -1,0 +1,15 @@
+flask-smorest
+mongoengine
+dateutils
+unidecode
+flask-cors
+numpy
+voxpopuli
+tqdm
+marshmallow_enum
+marshmallow
+dataclasses
+blinker
+python-dateutil
+python-dotenv
+-e git://github.com/loult-elte-fwere/cookie-factory.git#egg=cookie-factory
