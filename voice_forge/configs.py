@@ -20,6 +20,8 @@ class BaseConfig:
         'host': '127.0.0.1',
         'port': 27017}
 
+    SALT = "Mdr tu penses c'est le vrai salt?"
+
 
 class DebugConfig(BaseConfig):
     """Debug Flask Config """

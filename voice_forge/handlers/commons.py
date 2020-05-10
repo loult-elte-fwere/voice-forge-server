@@ -1,7 +1,9 @@
+from cookie_factory import hash_cookie
 from flask import request
 from flask.views import MethodView
 from flask_smorest import abort
 from mongoengine import DoesNotExist
+from ..models.users import User
 
 
 class RandomUserMethodView(MethodView):
@@ -15,22 +17,18 @@ class RandomUserMethodView(MethodView):
 
     def dispatch_request(self, *args, **kwargs):
         # retrieving the token from the headers
-        token = request.headers.get("Loult-cookie")
+        cookie = request.headers.get("Loult-cookie")
+        cookie_hash = hash_cookie(cookie)
         # retrieve cookie from db
-        # TODO
+        try:
+            self.user = User.objects.get(cookie_hash=cookie_hash)
+        except DoesNotExist:
+            abort(403, message="Not Authorized")
+
         try:
             return super().dispatch_request(*args, **kwargs)
         except DoesNotExist:
             abort(404, message="Entity not found in database")
-
-
-class AdminMethodView(RandomUserMethodView):
-
-    def __init__(self):
-        super().__init__()
-
-    def check_user_type(self):
-        pass
 
 
 class RegisteredUserMethodView(RandomUserMethodView):
@@ -39,5 +37,5 @@ class RegisteredUserMethodView(RandomUserMethodView):
         super().__init__()
 
     def check_user_type(self):
-        pass
+        assert isinstance(self.user, User)
 
