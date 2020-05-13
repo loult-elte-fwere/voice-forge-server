@@ -1,5 +1,5 @@
 from cookie_factory import hash_cookie
-from flask import request
+from flask import request, current_app
 from flask.views import MethodView
 from flask_smorest import abort
 from mongoengine import DoesNotExist
@@ -18,7 +18,7 @@ class RandomUserMethodView(MethodView):
     def dispatch_request(self, *args, **kwargs):
         # retrieving the token from the headers
         cookie = request.headers.get("Loult-cookie")
-        cookie_hash = hash_cookie(cookie)
+        cookie_hash = hash_cookie(cookie, current_app.config.get("SALT"))
         # retrieve cookie from db
         try:
             self.user = User.objects.get(cookie_hash=cookie_hash)

@@ -1,8 +1,7 @@
 from datetime import datetime
 from typing import List
 
-from mongoengine import Document, StringField, ListField, FileField, DateTimeField, ReferenceField, \
-    EmbeddedDocumentListField
+from mongoengine import Document, StringField, ListField, FileField, DateTimeField, ReferenceField
 
 
 class Corpus(Document):
@@ -34,6 +33,7 @@ class TheWordIsCorpus(Corpus):
 
 class Recording(Document):
     audio_file: bytes = FileField(required=True)
+    format: str = StringField(required=True)
     creation_time = DateTimeField(default=datetime)
 
 
