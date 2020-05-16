@@ -33,7 +33,7 @@ def phones_to_diphones(pho_list: List[str]) -> DiphoneList:
 class WordSet:
 
     def __init__(self, words: Dict[str, DiphoneSet] = None):
-        self.words: Dict[str, DiphoneSet] = dict() if not word else words
+        self.words: Dict[str, DiphoneSet] = dict() if not words else words
         self._current_diphones: Set[Diphone] = set(chain.from_iterable(self.words.values()))
 
     @property
@@ -75,7 +75,7 @@ if __name__ == "__main__":
             phonemized_word = voice.to_phonemes(word)
             phonemes = [pho.name for pho in phonemized_word if pho.name != "_"]
             pho_dict[word] = phonemes
-        pho_json_path = args.input.parent / Path(args.input.stem + ".json")
+        pho_json_path = args.input.parent / Path(args.input.stem + "_pho.json")
         logging.info(f"Done phonemizing. Saving phonemized JSON at {pho_json_path}")
         with open(pho_json_path, "w") as json_file:
             json.dump(pho_dict, json_file)
@@ -103,13 +103,14 @@ if __name__ == "__main__":
         while len(all_diphones_set) > len(selected_words.diphone_set):
             intersection_lengths = {}
             for word, word_diphones in remaining_words:
-                intersection_len = len(word_diphones - selected_words.diphone_set)
-                if intersection_len == 0:
+                difference_len = len(word_diphones - selected_words.diphone_set)
+                if difference_len == 0:
                     continue
-                intersection_lengths[word] = intersection_len
+                intersection_lengths[word] = difference_len
 
             if not intersection_lengths:
                 logging.info("Couldn't find any more words to add to the selected words set. Ending.")
+                break
 
             best_word = max(intersection_lengths.items(), key=operator.itemgetter(1))[0]
             logging.debug(f"Adding word f{best_word}, which adds {intersection_lengths[best_word]} to the "
@@ -121,7 +122,8 @@ if __name__ == "__main__":
             if not remaining_words.words:
                 logging.debug("No more words to add. Ending.")
                 break
-
+    logging.info(f"Coverage {len(selected_words.diphone_set) / len(all_diphones_set) * 100:.2f}% "
+                 f"of diphones with {len(selected_words.words)} words.")
     if args.output:
         with open(args.output, "w") as output_file:
             for word, _ in selected_words:
