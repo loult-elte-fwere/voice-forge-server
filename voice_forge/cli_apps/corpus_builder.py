@@ -8,6 +8,7 @@ from typing import Dict, List, Set, Tuple, Iterable
 
 import voxpopuli
 from tqdm import tqdm
+from voxpopuli import FrenchPhonemes
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument("input", type=Path,
@@ -92,11 +93,15 @@ if __name__ == "__main__":
     logging.info("Beginning to search for optimal word set for the phoneme set...")
 
     pho_set = voxpopuli.main.lg_code_to_phonem[args.language]._all
+    if args.language == "fr":
+        pho_set -= FrenchPhonemes.INDETERMINATE_WOVELS
+        pho_set -= {"9~"}
     all_diphones_set = set(product(pho_set, pho_set))
+
     logging.info(f"There are {len(pho_set)} phonemes, which translates "
                  f"into {len(all_diphones_set)} potential diphones")
 
-    logging.info("Running maximum-cover algorithm to find the best word subset..")
+    logging.info("Running maximum-cover algorithm to find the best word subset...")
     remaining_words = WordSet(diphone_dict)
     selected_words = WordSet()
     with tqdm(total=len(all_diphones_set)) as pbar:

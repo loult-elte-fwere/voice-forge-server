@@ -32,8 +32,8 @@ class TheWordIsCorpus(Corpus):
 
 
 class Recording(Document):
-    audio_file: bytes = FileField(required=True)
-    format: str = StringField(required=True)
+    audio_file = FileField(required=True)
+    mime_type: str = StringField(required=True)
     creation_time = DateTimeField(default=datetime)
 
 

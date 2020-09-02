@@ -56,6 +56,7 @@ config_mapping = {
 
 
 def get_config(flask_config=None):
+    # TODO switch to YAML config?
     """Returns the right config. If not argument is passed, loads the config
      depending on the set FLASK_CONFIG environment variable.
     Falls back to ProductionConfig if none is found"""
@@ -83,4 +84,5 @@ def set_up_db(config: BaseConfig):
     """Setting up the database based on a config object"""
     connect(config.MONGODB_SETTINGS["db"],
             host=config.MONGODB_SETTINGS["host"],
-            port=config.MONGODB_SETTINGS["port"])
+            port=config.MONGODB_SETTINGS["port"],
+            connect=False)

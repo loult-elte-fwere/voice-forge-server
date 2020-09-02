@@ -13,3 +13,5 @@ blinker
 python-dateutil
 python-dotenv
 -e git://github.com/loult-elte-fwere/cookie-factory.git#egg=cookie-factory
+python-magic
+pydub
